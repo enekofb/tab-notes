@@ -1,15 +1,16 @@
 package org.eneko.tab.notes.test.acceptance.steps;
 
+import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
 import org.eneko.tab.notes.note.Note;
 import org.eneko.tab.notes.note.NoteRepository;
+import org.eneko.tab.notes.util.EncryptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
-import sun.security.util.PendingException;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -21,11 +22,16 @@ import static org.hamcrest.core.IsNull.notNullValue;
 @SpringBootTest(classes = TabNotesApplication.class)
 @ContextConfiguration
 public class CreateNoteStepDefs {
+
+    @Autowired
+    EncryptService encryptService;
+
     @Autowired
     NoteRepository noteRepository;
 
     private Note createNote;
     private Note createdNote;
+    private String noteClearText;
 
     @Given("^I have an empty note$")
     public void iHaveAnEmptyNote() throws Throwable {
@@ -36,10 +42,11 @@ public class CreateNoteStepDefs {
 
     @Given("^I have a note with title \"([^\"]*)\" text \"([^\"]*)\" and password \"([^\"]*)\"$")
     public void i_have_a_note_with_title_text_and_password(String title, String text, String password) throws Throwable {
-        createNote = Note.builder()
+        this.encryptService.newEncryptSession(password);
+        this.noteClearText = text;
+        this.createNote = Note.builder()
                 .title(title)
-                .text(text)
-                .password(password)
+                .text(encryptService.encrypt(text))
                 .build();
         assertThat(createNote,notNullValue());
     }
@@ -55,5 +62,9 @@ public class CreateNoteStepDefs {
         assertThat(createdNote.getId(),notNullValue());
     }
 
-
+    @And("^note text has been encrypted$")
+    public void noteTextHasBeenEncrypted() throws Throwable {
+        String decryptedTextNote = encryptService.decrypt(createdNote.getText());
+        assertThat(noteClearText,equalTo(decryptedTextNote));
+    }
 }

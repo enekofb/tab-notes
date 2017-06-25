@@ -24,6 +24,4 @@ public class Note {
 
     private String text;
 
-    private String password;
-
 }

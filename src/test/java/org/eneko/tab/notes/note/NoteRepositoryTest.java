@@ -32,7 +32,7 @@ public class NoteRepositoryTest {
         Note note = Note.builder()
                 .title("title")
                 .text("text")
-                .password("password")
+//                .password("password")
                 .build();
         Note savedNote = noteRepository.save(note);
         assertThat(note,equalTo(savedNote));

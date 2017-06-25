@@ -21,17 +21,14 @@ public class NoteTest {
     }
 
     @Test
-    public void canCreateNoteWithTitleTextAndPassword() {
+    public void canCreateNoteWithTitleText() {
         String title = "dummy-title";
         String text = "dummy-text";
-        String password = "dummy-password";
         Note note = Note.builder().
                 title(title)
                 .text(text)
-                .password(password)
                 .build();
         assertThat(note.getTitle(),equalTo(title));
         assertThat(note.getText(),equalTo(text));
-        assertThat(note.getPassword(),equalTo(password));
     }
 }
