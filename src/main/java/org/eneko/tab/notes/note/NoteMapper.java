@@ -25,6 +25,22 @@ public class NoteMapper {
         return note;
     }
 
+    public RetrievedNoteDAO toRetrievedNoteDAO(Note foundNote, String password) {
+        String decryptedText = decryptText(foundNote.getText(),password);
+        return RetrievedNoteDAO.builder()
+                .title(foundNote.getTitle())
+                .text(decryptedText).build();
+    }
+
+    private String decryptText(String text, String password) {
+        if(password.isEmpty())
+            throw new RuntimeException("Invalid password");
+        encryptService.newEncryptSession(password);
+        String decryptedText = encryptService.decrypt(text);
+        encryptService.clearEncryptSession();
+        return decryptedText;
+    }
+
     private String encryptText(String password, String text) {
         if(password.isEmpty())
             return "";
@@ -33,4 +49,5 @@ public class NoteMapper {
         encryptService.clearEncryptSession();
         return encryptedText;
     }
+
 }

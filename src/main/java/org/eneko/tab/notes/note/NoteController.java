@@ -15,4 +15,8 @@ public class NoteController {
     public String createNote(CreateNoteDAO createdNoteDao) {
         return noteService.createNote(createdNoteDao);
     }
+
+    public RetrievedNoteDAO findNoteByIdAndPassword(String noteId, String password) {
+        return noteService.findNoteByIdAndPassword(noteId,password);
+    }
 }

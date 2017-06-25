@@ -23,14 +23,7 @@ public class CreateNoteStepDefs {
     @Autowired
     NoteController noteController;
 
-//    @Autowired
-//    EncryptService encryptService;
-//
-//    @Autowired
-//    NoteRepository noteRepository;
-
     private CreateNoteDAO createNoteDao;
-//    private String noteClearText;
 
     private String createNoteId;
 

@@ -1,7 +1,6 @@
 package org.eneko.tab.notes.note;
 
 import lombok.AllArgsConstructor;
-import org.eneko.tab.notes.note.util.EncryptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,5 +21,10 @@ public class NoteService {
         Note createNote = noteMapper.fromCreateNodeMapper(createNoteDao);
         Note createdNote = noteRepository.save(createNote);
         return createdNote.getId();
+    }
+
+    public RetrievedNoteDAO findNoteByIdAndPassword(String noteId, String password) {
+        Note foundNote = noteRepository.findById(noteId);
+        return noteMapper.toRetrievedNoteDAO(foundNote,password);
     }
 }

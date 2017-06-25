@@ -1,16 +1,18 @@
 package org.eneko.tab.notes.test.acceptance.steps;
 
+import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.eneko.tab.notes.note.CreateNoteDAO;
 import org.eneko.tab.notes.note.Note;
-import org.eneko.tab.notes.note.NoteRepository;
-import org.eneko.tab.notes.note.util.EncryptService;
-import org.hamcrest.CoreMatchers;
+import org.eneko.tab.notes.note.NoteController;
+import org.eneko.tab.notes.note.RetrievedNoteDAO;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import static org.hamcrest.CoreMatchers.equalTo;
+import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -20,40 +22,35 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class RetrieveNoteStepDefs {
 
     @Autowired
-    EncryptService encryptService;
-    @Autowired
-    NoteRepository noteRepository;
+    NoteController noteController;
 
-    private Note foundNote;
-    private String noteId;
     private String noteClearText;
     private String foundNoteClearText;
     private EncryptionOperationNotPossibleException encryptionException;
 
+    private String createdNoteId;
+    private String createNotedPassword;
+    private RetrievedNoteDAO retrievedNote;
+    private CreateNoteDAO createNoteDao;
 
-    @Given("^I have a created a note with id \"([^\"]*)\" password \"([^\"]*)\"$")
-    public void i_have_a_created_a_note_with_id(String noteId,String notePassword) throws Throwable {
-        this.noteClearText = "text";
-        this.encryptService.newEncryptSession(notePassword);
-        Note existingNote =  Note.builder()
-                .id(noteId)
+
+    @Given("^I have a created a note with password \"([^\"]*)\"$")
+    public void i_have_a_created_a_note_with_id(String notePassword) throws Throwable {
+        createNoteDao = CreateNoteDAO.builder()
                 .title("title")
-                .text(encryptService.encrypt(noteClearText))
+                .text("text")
+                .password(notePassword)
                 .build();
-        Note createdNote = noteRepository.save(existingNote);
-        assertThat(createdNote, CoreMatchers.notNullValue());
-        encryptService.clearEncryptSession();
+        this.createdNoteId = noteController.createNote(createNoteDao);
+        this.createNotedPassword = notePassword;
+        assertThat(createdNoteId,notNullValue());
     }
 
-    @When("^I retrieve a note with id \"([^\"]*)\" and password \"([^\"]*)\"$")
-    public void i_retrieve_a_note_with_id(String noteId,String password) throws Throwable {
+    @When("^I retrieve created note by id with password \"([^\"]*)\"$")
+    public void i_retrieve_a_note_by_id_with_password(String password){
         try{
-            this.noteId = noteId;
-            this.foundNote = noteRepository.findById(noteId);
-            this.encryptService.newEncryptSession(password);
-            this.foundNoteClearText = encryptService.decrypt(foundNote.getText());
-            assertThat(foundNote,notNullValue());
-            this.encryptService.clearEncryptSession();
+            retrievedNote = noteController.findNoteByIdAndPassword(this.createdNoteId,password);
+            assertThat(retrievedNote,notNullValue());
         }catch (EncryptionOperationNotPossibleException ex){
             this.encryptionException = ex;
         }
@@ -61,18 +58,17 @@ public class RetrieveNoteStepDefs {
 
     @Then("^note has been successfully retrieved$")
     public void note_has_been_successfully_retrieved() throws Throwable {
-        assertThat(foundNote.getId(),equalTo(noteId));
+        assertThat(retrievedNote.getTitle(),equalTo(createNoteDao.getTitle()));
     }
 
     @Then("^note text has been successfully decrypted$")
     public void note_text_has_been_successfully_decrypted() throws Throwable {
-        assertThat(foundNoteClearText,equalTo(noteClearText));
+        assertThat(retrievedNote.getText(),equalTo(createNoteDao.getText()));
     }
 
-    @Then("^note text has not been successfully decrypted$")
-    public void note_text_has_not_been_successfully_decrypted() throws Throwable {
+    @Then("^note has not been successfully retrieved$")
+    public void noteHasNotBeenSuccessfullyRetrieved() throws Throwable {
         assertThat(encryptionException,notNullValue());
         encryptionException = null;
     }
-
 }
