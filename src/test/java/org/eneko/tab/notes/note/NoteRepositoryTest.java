@@ -32,10 +32,22 @@ public class NoteRepositoryTest {
         Note note = Note.builder()
                 .title("title")
                 .text("text")
-//                .password("password")
                 .build();
         Note savedNote = noteRepository.save(note);
         assertThat(note,equalTo(savedNote));
+    }
+
+    @Test
+    public void canFindNoteById(){
+        Note note = Note.builder()
+                .id("id")
+                .title("title")
+                .text("text")
+                .build();
+        Note savedNote = noteRepository.save(note);
+        Note foundNote = noteRepository.findById("id");
+        assertThat(foundNote,equalTo(note));
+        assertThat(foundNote,equalTo(savedNote));
     }
 
 

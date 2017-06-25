@@ -24,4 +24,23 @@ public class Note {
 
     private String text;
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Note note = (Note) o;
+
+        if (title != null ? !title.equals(note.title) : note.title != null) return false;
+        return text != null ? text.equals(note.text) : note.text == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = 0;
+        result = 31 * result + (title != null ? title.hashCode() : 0);
+        result = 31 * result + (text != null ? text.hashCode() : 0);
+        return result;
+    }
 }

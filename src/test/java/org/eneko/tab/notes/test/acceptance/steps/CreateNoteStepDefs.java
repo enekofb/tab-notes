@@ -66,5 +66,6 @@ public class CreateNoteStepDefs {
     public void noteTextHasBeenEncrypted() throws Throwable {
         String decryptedTextNote = encryptService.decrypt(createdNote.getText());
         assertThat(noteClearText,equalTo(decryptedTextNote));
+        encryptService.clearEncryptSession();
     }
 }
