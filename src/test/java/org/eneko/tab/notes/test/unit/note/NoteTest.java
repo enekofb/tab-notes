@@ -1,5 +1,6 @@
-package org.eneko.tab.notes.note;
+package org.eneko.tab.notes.test.unit.note;
 
+import org.eneko.tab.notes.note.Note;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.junit4.SpringRunner;

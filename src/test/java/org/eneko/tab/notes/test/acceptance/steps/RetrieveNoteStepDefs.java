@@ -1,15 +1,11 @@
 package org.eneko.tab.notes.test.acceptance.steps;
 
-import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
 import org.eneko.tab.notes.note.CreateNoteDAO;
-import org.eneko.tab.notes.note.Note;
-import org.eneko.tab.notes.note.NoteController;
 import org.eneko.tab.notes.note.RetrievedNoteDAO;
-import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.IntegrationTest;
 import org.springframework.boot.test.SpringApplicationContextLoader;
@@ -19,7 +15,6 @@ import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.not;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 

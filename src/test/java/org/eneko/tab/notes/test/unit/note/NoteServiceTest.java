@@ -1,13 +1,11 @@
-package org.eneko.tab.notes.note;
+package org.eneko.tab.notes.test.unit.note;
 
-import org.eneko.tab.notes.note.util.EncryptService;
+import org.eneko.tab.notes.note.*;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import javax.swing.*;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.notNullValue;

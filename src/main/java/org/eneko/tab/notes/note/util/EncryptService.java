@@ -1,8 +1,5 @@
 package org.eneko.tab.notes.note.util;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.NoArgsConstructor;
 import org.jasypt.util.text.BasicTextEncryptor;
 import org.springframework.stereotype.Component;
 

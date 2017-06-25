@@ -7,6 +7,6 @@ import org.junit.runner.RunWith;
 @CucumberOptions(plugin = { "pretty", "html:target/cucumber-html-report" }, features = {
         "src/test/resources/acceptance"})
 @RunWith(Cucumber.class)
-public class RunCukesIT {
+public class CucumberIT {
 
 }
