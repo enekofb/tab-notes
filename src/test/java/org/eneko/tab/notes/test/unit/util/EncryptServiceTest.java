@@ -1,5 +1,6 @@
 package org.eneko.tab.notes.test.unit.util;
 
+import org.eneko.tab.notes.note.util.EncryptService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

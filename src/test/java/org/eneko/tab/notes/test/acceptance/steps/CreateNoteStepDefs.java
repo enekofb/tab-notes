@@ -1,18 +1,15 @@
 package org.eneko.tab.notes.test.acceptance.steps;
 
-import cucumber.api.java.en.And;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
-import org.eneko.tab.notes.note.Note;
-import org.eneko.tab.notes.note.NoteRepository;
-import org.eneko.tab.notes.test.unit.util.EncryptService;
+import org.eneko.tab.notes.note.CreateNoteDAO;
+import org.eneko.tab.notes.note.NoteController;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
 
-import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
 
@@ -24,48 +21,55 @@ import static org.hamcrest.core.IsNull.notNullValue;
 public class CreateNoteStepDefs {
 
     @Autowired
-    EncryptService encryptService;
+    NoteController noteController;
 
-    @Autowired
-    NoteRepository noteRepository;
+//    @Autowired
+//    EncryptService encryptService;
+//
+//    @Autowired
+//    NoteRepository noteRepository;
 
-    private Note createNote;
-    private Note createdNote;
-    private String noteClearText;
+    private CreateNoteDAO createNoteDao;
+//    private String noteClearText;
+
+    private String createNoteId;
 
     @Given("^I have an empty note$")
     public void iHaveAnEmptyNote() throws Throwable {
-        createNote = Note.builder()
+        createNoteDao = CreateNoteDAO.builder()
+                .title("")
+                .text("")
+                .password("")
                 .build();
-        assertThat(createNote,notNullValue());
+        assertThat(createNoteDao,notNullValue());
     }
 
     @Given("^I have a note with title \"([^\"]*)\" text \"([^\"]*)\" and password \"([^\"]*)\"$")
     public void i_have_a_note_with_title_text_and_password(String title, String text, String password) throws Throwable {
-        this.encryptService.newEncryptSession(password);
-        this.noteClearText = text;
-        this.createNote = Note.builder()
+        createNoteDao = CreateNoteDAO.builder()
                 .title(title)
-                .text(encryptService.encrypt(text))
+                .text(text)
+                .password(password)
                 .build();
-        assertThat(createNote,notNullValue());
+
+        assertThat(createNoteDao,notNullValue());
     }
 
     @When("^I create the note$")
     public void i_create_the_note() throws Throwable {
-        createdNote = noteRepository.save(createNote);
-        assertThat(createdNote,equalTo(createNote));
+        createNoteId = noteController.createNote(createNoteDao);
+        assertThat(createNoteId,notNullValue());
     }
 
     @Then("^note has been successfully created$")
     public void note_has_been_successfully_created() throws Throwable {
-        assertThat(createdNote.getId(),notNullValue());
+        assertThat(createNoteId,notNullValue());
     }
 
-    @And("^note text has been encrypted$")
-    public void noteTextHasBeenEncrypted() throws Throwable {
-        String decryptedTextNote = encryptService.decrypt(createdNote.getText());
-        assertThat(noteClearText,equalTo(decryptedTextNote));
-        encryptService.clearEncryptSession();
-    }
+//    @And("^note text has been encrypted$")
+//    public void noteTextHasBeenEncrypted() throws Throwable {
+//        String decryptedTextNote = encryptService.decrypt(createdNote.getText());
+//        assertThat(noteClearText,equalTo(decryptedTextNote));
+//        encryptService.clearEncryptSession();
+//    }
 }

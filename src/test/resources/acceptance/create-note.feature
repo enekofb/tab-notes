@@ -12,7 +12,6 @@ Feature: Can create notes
     Given I have a note with title "<title>" text "<text>" and password "<password>"
     When I create the note
     Then note has been successfully created
-    And note text has been encrypted
 
     Examples:
       | title    | text                            | password |

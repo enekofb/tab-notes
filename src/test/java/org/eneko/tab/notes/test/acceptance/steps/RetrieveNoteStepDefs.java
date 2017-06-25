@@ -5,7 +5,7 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.note.Note;
 import org.eneko.tab.notes.note.NoteRepository;
-import org.eneko.tab.notes.test.unit.util.EncryptService;
+import org.eneko.tab.notes.note.util.EncryptService;
 import org.hamcrest.CoreMatchers;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
