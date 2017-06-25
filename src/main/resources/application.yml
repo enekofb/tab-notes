@@ -1,0 +1,11 @@
+logging:
+  level:
+    root: INFO
+    org.springframwework.data: DEBUG
+
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: tab-notes
