@@ -3,6 +3,9 @@ logging:
     root: INFO
     org.springframwework.data: DEBUG
 
+server:
+  port: 8080
+
 spring:
   data:
     mongodb:

@@ -5,10 +5,12 @@ import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
 import org.eneko.tab.notes.note.CreateNoteDAO;
-import org.eneko.tab.notes.note.NoteController;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.core.IsNull.notNullValue;
@@ -17,11 +19,16 @@ import static org.hamcrest.core.IsNull.notNullValue;
  * Created by eneko on 25/06/17.
  */
 @SpringBootTest(classes = TabNotesApplication.class)
-@ContextConfiguration
+@ContextConfiguration(
+        classes = TabNotesApplication.class,
+        loader = SpringApplicationContextLoader.class)
+@IntegrationTest
 public class CreateNoteStepDefs {
 
+    public static final String HTTP_LOCALHOST_8080_NOTES = "http://localhost:8080/notes";
+
     @Autowired
-    NoteController noteController;
+    RestTemplate noteServiceClient;
 
     private CreateNoteDAO createNoteDao;
 
@@ -50,7 +57,7 @@ public class CreateNoteStepDefs {
 
     @When("^I create the note$")
     public void i_create_the_note() throws Throwable {
-        createNoteId = noteController.createNote(createNoteDao);
+        createNoteId=noteServiceClient.postForObject(HTTP_LOCALHOST_8080_NOTES,createNoteDao,String.class);
         assertThat(createNoteId,notNullValue());
     }
 
@@ -58,11 +65,4 @@ public class CreateNoteStepDefs {
     public void note_has_been_successfully_created() throws Throwable {
         assertThat(createNoteId,notNullValue());
     }
-
-//    @And("^note text has been encrypted$")
-//    public void noteTextHasBeenEncrypted() throws Throwable {
-//        String decryptedTextNote = encryptService.decrypt(createdNote.getText());
-//        assertThat(noteClearText,equalTo(decryptedTextNote));
-//        encryptService.clearEncryptSession();
-//    }
 }

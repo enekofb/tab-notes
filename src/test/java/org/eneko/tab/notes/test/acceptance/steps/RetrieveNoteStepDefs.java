@@ -4,12 +4,19 @@ import cucumber.api.PendingException;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
+import org.eneko.tab.notes.TabNotesApplication;
 import org.eneko.tab.notes.note.CreateNoteDAO;
 import org.eneko.tab.notes.note.Note;
 import org.eneko.tab.notes.note.NoteController;
 import org.eneko.tab.notes.note.RetrievedNoteDAO;
 import org.jasypt.exceptions.EncryptionOperationNotPossibleException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.IntegrationTest;
+import org.springframework.boot.test.SpringApplicationContextLoader;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.RestTemplate;
 
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.CoreMatchers.not;
@@ -19,14 +26,21 @@ import static org.hamcrest.core.IsNull.notNullValue;
 /**
  * Created by eneko on 25/06/17.
  */
+@SpringBootTest(classes = TabNotesApplication.class)
+@ContextConfiguration(
+        classes = TabNotesApplication.class,
+        loader = SpringApplicationContextLoader.class)
+@IntegrationTest
 public class RetrieveNoteStepDefs {
 
-    @Autowired
-    NoteController noteController;
+    private static final String HTTP_LOCALHOST_8080_NOTES = "http://localhost:8080/notes";
 
-    private String noteClearText;
-    private String foundNoteClearText;
-    private EncryptionOperationNotPossibleException encryptionException;
+    private static final String HTTP_LOCALHOST_8080_NOTES_GET_NOTE_BY_ID =HTTP_LOCALHOST_8080_NOTES+"/" ;
+
+    @Autowired
+    RestTemplate noteServiceClient;
+
+    private HttpServerErrorException encryptionException;
 
     private String createdNoteId;
     private String createNotedPassword;
@@ -41,7 +55,7 @@ public class RetrieveNoteStepDefs {
                 .text("text")
                 .password(notePassword)
                 .build();
-        this.createdNoteId = noteController.createNote(createNoteDao);
+        this.createdNoteId=noteServiceClient.postForObject(HTTP_LOCALHOST_8080_NOTES,createNoteDao,String.class);
         this.createNotedPassword = notePassword;
         assertThat(createdNoteId,notNullValue());
     }
@@ -49,9 +63,9 @@ public class RetrieveNoteStepDefs {
     @When("^I retrieve created note by id with password \"([^\"]*)\"$")
     public void i_retrieve_a_note_by_id_with_password(String password){
         try{
-            retrievedNote = noteController.findNoteByIdAndPassword(this.createdNoteId,password);
+            retrievedNote = noteServiceClient.getForObject(HTTP_LOCALHOST_8080_NOTES_GET_NOTE_BY_ID+"/"+createdNoteId+"?password="+password,RetrievedNoteDAO.class);
             assertThat(retrievedNote,notNullValue());
-        }catch (EncryptionOperationNotPossibleException ex){
+        }catch (HttpServerErrorException ex){
             this.encryptionException = ex;
         }
     }
