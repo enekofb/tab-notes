@@ -1,10 +1,9 @@
-package org.eneko.tab.notes.util;
+package org.eneko.tab.notes.test.unit.util;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import static org.hamcrest.CoreMatchers.equalTo;

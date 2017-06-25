@@ -7,7 +7,7 @@ import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
 import org.eneko.tab.notes.note.Note;
 import org.eneko.tab.notes.note.NoteRepository;
-import org.eneko.tab.notes.util.EncryptService;
+import org.eneko.tab.notes.test.unit.util.EncryptService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ContextConfiguration;

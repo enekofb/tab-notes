@@ -1,4 +1,4 @@
-package org.eneko.tab.notes.util;
+package org.eneko.tab.notes.test.unit.util;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
