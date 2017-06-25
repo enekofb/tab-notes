@@ -18,6 +18,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 public class Note {
 
     @Id
-    private long id;
+    private String id;
+
+    private String title;
+
+    private String text;
+
+    private String password;
 
 }

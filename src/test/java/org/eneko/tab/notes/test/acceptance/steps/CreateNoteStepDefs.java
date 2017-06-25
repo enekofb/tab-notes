@@ -1,5 +1,6 @@
 package org.eneko.tab.notes.test.acceptance.steps;
 
+import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import org.eneko.tab.notes.TabNotesApplication;
@@ -23,18 +24,36 @@ public class CreateNoteStepDefs {
     @Autowired
     NoteRepository noteRepository;
 
-    Note savedNote;
+    private Note createNote;
+    private Note createdNote;
 
-    @When("^I create an empty note$")
-    public void i_create_an_empty_note() throws Throwable {
-        Note note = Note.builder().build();
-        savedNote = noteRepository.save(note);
-        assertThat(note,equalTo(savedNote));
+    @Given("^I have an empty note$")
+    public void iHaveAnEmptyNote() throws Throwable {
+        createNote = Note.builder()
+                .build();
+        assertThat(createNote,notNullValue());
     }
 
-    @Then("^note has been sucessfully created$")
-    public void note_has_been_sucessfully_created() throws Throwable {
-        assertThat(savedNote.getId(),notNullValue());
-
+    @Given("^I have a note with title \"([^\"]*)\" text \"([^\"]*)\" and password \"([^\"]*)\"$")
+    public void i_have_a_note_with_title_text_and_password(String title, String text, String password) throws Throwable {
+        createNote = Note.builder()
+                .title(title)
+                .text(text)
+                .password(password)
+                .build();
+        assertThat(createNote,notNullValue());
     }
+
+    @When("^I create the note$")
+    public void i_create_the_note() throws Throwable {
+        createdNote = noteRepository.save(createNote);
+        assertThat(createdNote,equalTo(createNote));
+    }
+
+    @Then("^note has been successfully created$")
+    public void note_has_been_successfully_created() throws Throwable {
+        assertThat(createdNote.getId(),notNullValue());
+    }
+
+
 }
